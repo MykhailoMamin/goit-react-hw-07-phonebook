@@ -1,26 +1,29 @@
-import { ContactForm } from './ContactForm/ContactForm';
-import { ContactList } from './ContactList/ContactList';
-import { Filter } from './Filter/Filter';
-import { Title, Subtitle, Container } from './App.styled';
-import { useDispatch } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { fetchContacts } from 'redux/contactsOperations';
+import { selectIsLoading, selectError } from 'redux/selectors';
+import { fetchContacts } from 'redux/operations';
+import ContactForm from './ContactForm/ContactForm';
+import ContactsList from './ContactsList/ContactsList';
+import Filter from './Filter/Filter';
 
 export const App = () => {
   const dispatch = useDispatch();
+  const isLoading = useSelector(selectIsLoading);
+  const error = useSelector(selectError);
 
   useEffect(() => {
     dispatch(fetchContacts());
   }, [dispatch]);
 
   return (
-    <Container>
-      <Title>Phonebook</Title>
+    <div>
+      <h1>Phonebook</h1>
       <ContactForm />
-
-      <Subtitle>Contacts</Subtitle>
+      <h2>Contacts</h2>
       <Filter />
-      <ContactList />
-    </Container>
+      <ContactsList />
+      {!!isLoading && !error && <b>Request in progress...</b>}
+    </div>
   );
 };
